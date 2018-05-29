@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:BTBulldozer"
+             x:Class="BTBulldozer.MainPage">
+    <StackLayout Spacing="10" x:Name="Top">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="300" />
+            </Grid.ColumnDefinitions>
+            <Entry Placeholder="AA:BB:CC:DD:EE:FF" Grid.Row="0" Grid.Column="0" x:Name="Address" TextChanged="OnAddressChanged" />
+            <Button Text="Connect" Grid.Row="0" Grid.Column="1" x:Name="Connect" Clicked="OnConnectClicked" />
+        </Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Text="F" Grid.Row="0" Grid.Column="1" x:Name="Forward" Clicked="OnForwardClicked" />
+            <Button Text="UP" Grid.Row="0" Grid.Column="3" x:Name="Up" Clicked="OnUpClicked" />
+            <Button Text="L" Grid.Row="1" Grid.Column="0" x:Name="Left" Clicked="OnLeftClicked" />
+            <Button Text="Stop" Grid.Row="1" Grid.Column="1" x:Name="Stop"  Clicked="OnStopClicked" />
+            <Button Text="R" Grid.Row="1" Grid.Column="2" x:Name="Right" Clicked="OnRightClicked" />
+            <Button Text="Keep" Grid.Row="1" Grid.Column="3" x:Name="Keep" Clicked="OnKeepClicked" />
+            <Button Text="B" Grid.Row="2" Grid.Column="1" x:Name="Back" Clicked="OnBackClicked" />
+            <Button Text="DOWN" Grid.Row="2" Grid.Column="3" x:Name="Down" Clicked="OnDownClicked" />
+        </Grid>
+    </StackLayout>
+</ContentPage>

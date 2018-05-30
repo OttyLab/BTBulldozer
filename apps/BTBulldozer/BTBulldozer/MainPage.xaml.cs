@@ -35,81 +35,79 @@ namespace BTBulldozer
 
         Status status;
 
+        public Status CurrentStatus
+        {
+            get
+            {
+                return status;
+            }
+
+            set
+            {
+                switch(value)
+                {
+                    case Status.INIT:
+                    case Status.INVALID_ADDRESS:
+                        Address.IsEnabled = true;
+                        Connect.Text = "Connect";
+                        Connect.IsEnabled = false;
+                        EnableOperations(false);
+                        break;
+                    case Status.DISCONNECTED:
+                        Address.IsEnabled = true;
+                        Connect.Text = "Connect";
+                        Connect.IsEnabled = true;
+                        EnableOperations(false);
+                        break;
+                    case Status.CONNECTED:
+                        Address.IsEnabled = false;
+                        Connect.Text = "Disconnect";
+                        Connect.IsEnabled = true;
+                        EnableOperations(true);
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Unsupported status: {status}");
+                }
+                status = value;
+            }
+        }
+
         public MainPage()
         {
             InitializeComponent();
             if (Application.Current.Properties.ContainsKey(ADDRESS_KEY))
             {
                 Address.Text = Application.Current.Properties[ADDRESS_KEY] as string;
-                ChangeStatus(Status.DISCONNECTED);
+                CurrentStatus = Status.DISCONNECTED;
             }
             else
             {
-                ChangeStatus(Status.INIT);
+                CurrentStatus = Status.INIT;
             }
         }
 
-        public void ChangeStatus(Status status)
+        private void EnableOperations(bool isEnabled)
         {
-            switch(status)
-            {
-                case Status.INIT:
-                case Status.INVALID_ADDRESS:
-                    Address.IsEnabled = true;
-                    Connect.Text = "Connect";
-                    Connect.IsEnabled = false;
-                    Forward.IsEnabled = false;
-                    Back.IsEnabled = false;
-                    Right.IsEnabled = false;
-                    Left.IsEnabled = false;
-                    Stop.IsEnabled = false;
-                    Up.IsEnabled = false;
-                    Down.IsEnabled = false;
-                    Keep.IsEnabled = false;
-                    break;
-                case Status.DISCONNECTED:
-                    Address.IsEnabled = true;
-                    Connect.Text = "Connect";
-                    Connect.IsEnabled = true;
-                    Forward.IsEnabled = false;
-                    Back.IsEnabled = false;
-                    Right.IsEnabled = false;
-                    Left.IsEnabled = false;
-                    Stop.IsEnabled = false;
-                    Up.IsEnabled = false;
-                    Down.IsEnabled = false;
-                    Keep.IsEnabled = false;
-                    break;
-                case Status.CONNECTED:
-                    Address.IsEnabled = false;
-                    Connect.Text = "Disconnect";
-                    Connect.IsEnabled = true;
-                    Forward.IsEnabled = true;
-                    Back.IsEnabled = true;
-                    Right.IsEnabled = true;
-                    Left.IsEnabled = true;
-                    Stop.IsEnabled = true;
-                    Up.IsEnabled = true;
-                    Down.IsEnabled = true;
-                    Keep.IsEnabled = true;
-                    break;
-                default:
-                    throw new InvalidOperationException($"Unsupported status: {status}");
-            }
-
-            this.status = status;
+            Forward.IsEnabled = isEnabled;
+            Back.IsEnabled = isEnabled;
+            Right.IsEnabled = isEnabled;
+            Left.IsEnabled = isEnabled;
+            Stop.IsEnabled = isEnabled;
+            Up.IsEnabled = isEnabled;
+            Down.IsEnabled = isEnabled;
+            Keep.IsEnabled = isEnabled;
         }
 
         private void OnAddressChanged(object sender, EventArgs e)
         {
             if (!Regex.IsMatch(Address.Text, "^([0-9a-fA-F]{2}[:]){5}[0-9a-fA-F]{2}"))
             {
-                ChangeStatus(Status.INVALID_ADDRESS);
+                CurrentStatus = Status.INVALID_ADDRESS;
                 Address.BackgroundColor = Color.Pink;
                 return;
             }
 
-            ChangeStatus(Status.DISCONNECTED);
+            CurrentStatus = Status.DISCONNECTED;
             Address.BackgroundColor = Color.Default;
             Application.Current.Properties[ADDRESS_KEY] = Address.Text;
         }

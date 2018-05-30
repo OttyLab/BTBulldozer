@@ -153,11 +153,11 @@ namespace BTBulldozer.UWP
         {
             if (socket is null)
             {
-                mainPage.ChangeStatus(BTBulldozer.MainPage.Status.DISCONNECTED);
+                mainPage.CurrentStatus = BTBulldozer.MainPage.Status.DISCONNECTED;
             }
             else
             {
-                mainPage.ChangeStatus(BTBulldozer.MainPage.Status.CONNECTED);
+                mainPage.CurrentStatus = BTBulldozer.MainPage.Status.CONNECTED;
             }
         }
     }

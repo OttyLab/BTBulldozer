@@ -1,14 +1,16 @@
-import digitalio, busio, pulseio
+import analogio, digitalio, busio, pulseio
 import board
 import time
 
+def get_half_voltage():
+    return analogio.AnalogIn(board.D9)
 
-def get_actuators():
+def get_actuators(half_voltage):
     led = digitalio.DigitalInOut(board.D13)
     led.direction = digitalio.Direction.OUTPUT
 
     # Common actuator setting
-    duty = int(65535 / 3)
+    duty = int(1.5 / (half_voltage / 65535 * 2 * 3.3) * 65535)
     pwm = pulseio.PWMOut(board.D10, frequency=10000, duty_cycle=duty)
 
     # Catapillars
@@ -75,7 +77,8 @@ def keep(actuators):
     actuators[2][1].value = 0
 
 def main():
-    actuators = get_actuators()
+    half_voltage = get_half_voltage()
+    actuators = get_actuators(half_voltage.value)
     uart = get_uart()
 
     while True:

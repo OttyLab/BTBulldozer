@@ -14,3 +14,6 @@ The controller is designed for Android and Windows UWP with Xamarin. iOS is not 
 ## Directories
 + feather: includes CircuitPython code for Feather M0
 + apps: includes Xamarin project
+
+## Sample
+![Sample](sample.gif)

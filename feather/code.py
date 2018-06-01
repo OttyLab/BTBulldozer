@@ -9,7 +9,7 @@ def get_actuators():
 
     # Common actuator setting
     duty = int(65535 / 3)
-    pwm = pulseio.PWMOut(board.D9, frequency=10000, duty_cycle=duty)
+    pwm = pulseio.PWMOut(board.D10, frequency=10000, duty_cycle=duty)
 
     # Catapillars
     a01 = digitalio.DigitalInOut(board.A2)

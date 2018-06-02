@@ -10,5 +10,6 @@
         public static byte[] UP { get; } = new byte[] { 0x10 };
         public static byte[] DOWN { get; } = new byte[] { 0x11 };
         public static byte[] KEEP { get; } = new byte[] { 0x1F };
+        public static byte[] VOLTAGE { get; } = new byte[] { 0xF0 };
     }
 }

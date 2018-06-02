@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Rfcomm;
@@ -139,6 +140,28 @@ namespace BTBulldozer.UWP
             await socket.ConnectAsync(spp.ConnectionHostName, spp.ConnectionServiceName);
 
             ChangeStatus();
+
+            var timer = new Timer(async (object _) =>
+            {
+                if (socket is null)
+                {
+                    return;
+                }
+
+                var writer = new DataWriter(socket.OutputStream);
+                writer.WriteBytes(Command.VOLTAGE);
+                await writer.StoreAsync();
+
+                var reader = new DataReader(socket.InputStream);
+                await reader.LoadAsync(4);
+
+                var buffer = new byte[4];
+                reader.ReadBytes(buffer);
+                var voltage = BitConverter.ToInt32(buffer, 0);
+                var status = new BTBulldozer.MainPage.Status() { Voltage = voltage };
+
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => mainPage.OnStatusUpdate(status));
+            }, null, 0, 1000);
         }
 
         async Task Disconnect()
@@ -153,11 +176,11 @@ namespace BTBulldozer.UWP
         {
             if (socket is null)
             {
-                mainPage.CurrentStatus = BTBulldozer.MainPage.Status.DISCONNECTED;
+                mainPage.CurrentState = BTBulldozer.MainPage.State.DISCONNECTED;
             }
             else
             {
-                mainPage.CurrentStatus = BTBulldozer.MainPage.Status.CONNECTED;
+                mainPage.CurrentState = BTBulldozer.MainPage.State.CONNECTED;
             }
         }
     }

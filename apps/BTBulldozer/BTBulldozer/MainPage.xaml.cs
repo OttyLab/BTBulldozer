@@ -25,50 +25,55 @@ namespace BTBulldozer
         public event Func<object, EventArgs, Task> OnDown;
         public event Func<object, EventArgs, Task> OnKeep;
 
-        public enum Status
+        public enum State
         {
             INIT,
             INVALID_ADDRESS,
             DISCONNECTED,
             CONNECTED
-        };
+        }
 
-        Status status;
+        public struct DeviceStatus
+        {
+            public int Voltage { get; set; }
+        }
 
-        public Status CurrentStatus
+        State state;
+
+        public State CurrentState
         {
             get
             {
-                return status;
+                return state;
             }
 
             set
             {
                 switch(value)
                 {
-                    case Status.INIT:
-                    case Status.INVALID_ADDRESS:
+                    case State.INIT:
+                    case State.INVALID_ADDRESS:
                         Address.IsEnabled = true;
                         Connect.Text = "Connect";
                         Connect.IsEnabled = false;
                         EnableOperations(false);
                         break;
-                    case Status.DISCONNECTED:
+                    case State.DISCONNECTED:
                         Address.IsEnabled = true;
                         Connect.Text = "Connect";
                         Connect.IsEnabled = true;
                         EnableOperations(false);
                         break;
-                    case Status.CONNECTED:
+                    case State.CONNECTED:
                         Address.IsEnabled = false;
                         Connect.Text = "Disconnect";
                         Connect.IsEnabled = true;
                         EnableOperations(true);
                         break;
                     default:
-                        throw new InvalidOperationException($"Unsupported status: {status}");
+                        throw new InvalidOperationException($"Unsupported state: {state}");
                 }
-                status = value;
+                state = value;
             }
         }
 
@@ -78,11 +83,11 @@ namespace BTBulldozer
             if (Application.Current.Properties.ContainsKey(ADDRESS_KEY))
             {
                 Address.Text = Application.Current.Properties[ADDRESS_KEY] as string;
-                CurrentStatus = Status.DISCONNECTED;
+                CurrentState = State.DISCONNECTED;
             }
             else
             {
-                CurrentStatus = Status.INIT;
+                CurrentState = State.INIT;
             }
         }
 
@@ -102,24 +107,24 @@ namespace BTBulldozer
         {
             if (!Regex.IsMatch(Address.Text, "^([0-9a-fA-F]{2}[:]){5}[0-9a-fA-F]{2}"))
             {
-                CurrentStatus = Status.INVALID_ADDRESS;
+                CurrentState = State.INVALID_ADDRESS;
                 Address.BackgroundColor = Color.Pink;
                 return;
             }
 
-            CurrentStatus = Status.DISCONNECTED;
+            CurrentState = State.DISCONNECTED;
             Address.BackgroundColor = Color.Default;
             Application.Current.Properties[ADDRESS_KEY] = Address.Text;
         }
 
         private async void OnConnectClicked(object sender, EventArgs e)
         {
-            switch (status)
+            switch (state)
             {
-                case Status.CONNECTED:
+                case State.CONNECTED:
                     await OnDisconnect?.Invoke(sender, e);
                     break;
-                case Status.DISCONNECTED:
+                case State.DISCONNECTED:
                     await OnConnect?.Invoke(sender, e, Address.Text);
                     break;
             }

@@ -150,11 +150,11 @@ namespace BTBulldozer.Droid
         {
             if (socket.IsConnected)
             {
-                mainPage.CurrentStatus = MainPage.Status.CONNECTED;
+                mainPage.CurrentState = MainPage.State.CONNECTED;
             }
             else
             {
-                mainPage.CurrentStatus = MainPage.Status.DISCONNECTED;
+                mainPage.CurrentState = MainPage.State.DISCONNECTED;
             }
         }
     }

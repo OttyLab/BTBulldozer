@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -33,7 +29,7 @@ namespace BTBulldozer
             CONNECTED
         }
 
-        public struct DeviceStatus
+        public struct Status
         {
             public int Voltage { get; set; }
         }
@@ -89,6 +85,12 @@ namespace BTBulldozer
             {
                 CurrentState = State.INIT;
             }
+        }
+
+        public void OnStatusUpdate(Status status)
+        {
+            var voltage = 3.3 * (status.Voltage / (double) Int16.MaxValue);
+            StatusLabel.Text = $"Voltage: {voltage} V";
         }
 
         private void EnableOperations(bool isEnabled)

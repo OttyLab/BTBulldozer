@@ -100,6 +100,8 @@ def main():
                 down(actuators)
             elif data[0] == 0x1f:
                 keep(actuators)
+            elif data[0] == 0xf0:
+                uart.write(half_voltage.value.to_bytes(4, 'little'))
 
         time.sleep(0.5)
 

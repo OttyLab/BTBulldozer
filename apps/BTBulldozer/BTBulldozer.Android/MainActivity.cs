@@ -5,6 +5,7 @@ using Android.Bluetooth;
 using Android.Content;
 using Java.Util;
 using System.Threading.Tasks;
+using System;
 
 namespace BTBulldozer.Droid
 {
@@ -137,6 +138,7 @@ namespace BTBulldozer.Droid
             await socket.ConnectAsync();
 
             ChangeStatus();
+            StartObservation();
         }
 
         async Task Disconnect()
@@ -156,6 +158,26 @@ namespace BTBulldozer.Droid
             {
                 mainPage.CurrentState = MainPage.State.DISCONNECTED;
             }
+        }
+
+        void StartObservation()
+        {
+            var timer = new System.Threading.Timer(async (object _) =>
+            {
+                if (! socket.IsConnected)
+                {
+                    return;
+                }
+
+                await socket.OutputStream.WriteAsync(Command.VOLTAGE, 0, 1);
+
+                var buffer = new byte[4];
+                await socket.InputStream.ReadAsync(buffer, 0, 4);
+                var voltage = BitConverter.ToInt32(buffer, 0);
+                var status = new MainPage.Status() { Voltage = voltage };
+
+                RunOnUiThread(() => mainPage.OnStatusUpdate(status));
+            }, null, 0, 1000);
         }
     }
 }
